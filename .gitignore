@@ -41,3 +41,6 @@ local.properties
 
 # Sandbox stuff
 _sandbox
+
+# Firebase json
+app/google-services.json

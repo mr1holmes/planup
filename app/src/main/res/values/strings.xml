@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">PlanUp</string>
+    <string name="facebook_app_id">447935822072752</string>
+    <string name="fb_login_protocol_scheme">fb447935822072752</string>
 </resources>
