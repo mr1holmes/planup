@@ -17,8 +17,8 @@ import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.mr1holmes.planup.sync.PlanupSyncAdapter;
 import com.mr1holmes.planup.util.LogUtils;
-import com.mr1holmes.planup.util.VolleySingleton;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -38,7 +38,9 @@ public class SplashScreen extends AppCompatActivity {
         FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_splashscreen);
 
-        String url = "http://10.0.3.2:5000/version";
+        PlanupSyncAdapter.initializeSyncAdapter(this);
+
+        String url = "https://planup-backend.herokuapp.com";
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -52,7 +54,7 @@ public class SplashScreen extends AppCompatActivity {
             }
         });
 
-        VolleySingleton.getInstance(this).addToRequestQueue(jsonObjectRequest);
+        //VolleySingleton.getInstance(this).addToRequestQueue(jsonObjectRequest);
 
         loginButton = (LoginButton) findViewById(R.id.login_button);
 
@@ -125,3 +127,4 @@ public class SplashScreen extends AppCompatActivity {
         callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 }
+

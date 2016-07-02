@@ -166,6 +166,32 @@ public class PlanupProvider extends ContentProvider {
         return rowsUpdated;
     }
 
+
+    @Override
+    public int bulkInsert(Uri uri, ContentValues[] values) {
+        final SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        switch (mUriMatcher.match(uri)) {
+            case USER: {
+                db.beginTransaction();
+                int retCount = 0;
+                try {
+                    for (ContentValues value : values) {
+                        long resId = db.insert(PlanupContract.TABLE_USER.TABLE_NAME, null, value);
+                        if (resId != -1) retCount++;
+                    }
+                    db.setTransactionSuccessful();
+                } finally {
+                    db.endTransaction();
+                }
+                getContext().getContentResolver().notifyChange(uri, null);
+                return retCount;
+            }
+            default:
+                return super.bulkInsert(uri, values);
+        }
+
+    }
+
     private Cursor getUsers(Uri uri, String[] projection, String sortOrder) {
         return sUserQueryBuilder.query(mDbHelper.getReadableDatabase(),
                 projection,
