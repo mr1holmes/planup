@@ -94,6 +94,7 @@ public class PlanupProvider extends ContentProvider {
         switch (mUriMatcher.match(uri)) {
             case USER: {
                 long _id = db.insert(PlanupContract.TABLE_USER.TABLE_NAME, null, values);
+
                 if (_id == -1)
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;

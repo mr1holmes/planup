@@ -7,6 +7,12 @@
     <string name="content_authority">com.mr1holmes.planup</string>
     <string name="sync_account_type">com.mr1holmes.planup.datasync</string>
 
+    <!--NetUtil-->
+    <string name="server_endpoint">https://planup-backend.herokuapp.com/</string>
+
+    <!--Local user data-->
+    <string name="local_id">local_id</string>
+
 </resources>
 
 

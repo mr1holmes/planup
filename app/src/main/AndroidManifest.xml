@@ -89,6 +89,10 @@
                 android:resource="@xml/syncadapter" />
         </service>
 
+        <service
+            android:name=".service.FetchUserFriendsService"
+            android:exported="false" />
+
     </application>
 
 </manifest>

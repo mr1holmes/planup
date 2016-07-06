@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
-import com.mr1holmes.planup.util.LogUtils;
-
 /**
  * Define a Service that returns an IBinder for the
  * sync adapter class, allowing the sync adapter framework to call
@@ -29,7 +27,6 @@ public class SyncService extends Service {
          * Set the sync adapter as syncable
          * Disallow parallel syncs
          */
-        LogUtils.LOGD(TAG, " SyncService oncreate");
         synchronized (sSyncAdapterLock) {
             if (sSyncAdapter == null) {
                 sSyncAdapter = new PlanupSyncAdapter(getApplicationContext(), true);
