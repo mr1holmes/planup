@@ -13,6 +13,13 @@
     <!--Local user data-->
     <string name="local_id">local_id</string>
 
+    <!--Tab names-->
+    <string-array name="tab_names">
+        <item name="groups_tab">Groups</item>
+        <item name="me_tab">Me</item>
+        <item name="plan_tab">Plans</item>
+    </string-array>
+
 </resources>
 
 

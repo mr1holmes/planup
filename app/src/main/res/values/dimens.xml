@@ -7,4 +7,7 @@
     <dimen name="app_text_size_large">18sp</dimen>
     <dimen name="app_text_size_xlarge">20sp</dimen>
     <dimen name="app_text_size_logo">40sp</dimen>
+
+    <dimen name="keyline_1">16dp</dimen>
+    <dimen name="keyline_2">72dp</dimen>
 </resources>

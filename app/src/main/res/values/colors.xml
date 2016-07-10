@@ -6,7 +6,13 @@
     <color name="colorPrimary">#FF26C6DA</color>
     <color name="colorPrimaryDark">#00BCD4</color>
 
+    <color name="launch_background">#f5f5f5</color>
+
     <!--Text colors-->
+    <color name="text_on_primary">#f5f5f5</color>
+    <color name="subtitle_on_primary">#f5f5f5</color>
     <color name="app_body_text_1">#de000000</color>
     <color name="app_body_text_2">#8a000000</color>
+
+    <color name="unselected_tab_on_primary">#b3004446</color>
 </resources>

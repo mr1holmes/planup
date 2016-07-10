@@ -6,8 +6,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.DatabaseUtils;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -27,40 +30,38 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.mr1holmes.planup.data.PlanupContract;
 import com.mr1holmes.planup.service.FetchUserFriendsService;
 import com.mr1holmes.planup.sync.PlanupSyncAdapter;
+import com.mr1holmes.planup.util.AccountUtils;
 import com.mr1holmes.planup.util.LogUtils;
 import com.mr1holmes.planup.util.VolleySingleton;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Arrays;
 
 /**
- * Created by mr1holmes on 25/6/16.
+ * Welcome Activity
  */
 public class SplashScreen extends AppCompatActivity {
 
     private LoginButton loginButton;
+    private ProgressBar mProgress;
     private CallbackManager callbackManager;
     private final String TAG = LogUtils.makeLogTag(this.getClass());
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        LogUtils.LOGV(TAG, "SplashScreen onCreate");
         FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_splashscreen);
 
         PlanupSyncAdapter.initializeSyncAdapter(this);
 
         loginButton = (LoginButton) findViewById(R.id.login_button);
+        mProgress = (ProgressBar) findViewById(R.id.login_progress);
 
-        final Set<String> permissions = new HashSet<>();
-        permissions.add("email");
-        permissions.add("user_friends");
-
-        loginButton.setReadPermissions(new ArrayList<String>(permissions));
+        loginButton.setReadPermissions(AccountUtils.FACEBOOK_PERMISSIONS);
 
         callbackManager = CallbackManager.Factory.create();
 
@@ -72,8 +73,11 @@ public class SplashScreen extends AppCompatActivity {
 
 
                 // Check if all required permissions are provided
-                if (loginResult.getAccessToken().getPermissions().containsAll(permissions)) {
+                if (AccountUtils.isLoggedIn()) {
                     LogUtils.LOGV(TAG, "User provided all the permissions");
+
+                    loginButton.setVisibility(View.GONE);
+                    mProgress.setVisibility(View.VISIBLE);
 
                     GraphRequest request = GraphRequest.newMeRequest(
                             loginResult.getAccessToken(),
@@ -95,7 +99,8 @@ public class SplashScreen extends AppCompatActivity {
 
                 } else {
                     LogUtils.LOGV(TAG, "User did not provide some permissions, try again");
-                    LoginManager.getInstance().logInWithReadPermissions(SplashScreen.this, permissions);
+                    LoginManager.getInstance().logInWithReadPermissions(SplashScreen.this,
+                            Arrays.asList(AccountUtils.FACEBOOK_PERMISSIONS));
                 }
             }
 
@@ -111,6 +116,20 @@ public class SplashScreen extends AppCompatActivity {
                 LogUtils.LOGD(TAG, "Error");
             }
         });
+
+        if (AccountUtils.isLoggedIn()) {
+            // show startup screen for few second and then move to next screen
+            Handler mHandler = new Handler();
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    startNext();
+                }
+            }, 1500);
+        } else {
+            mProgress.setVisibility(View.GONE);
+            loginButton.setVisibility(View.VISIBLE);
+        }
 
     }
 
@@ -161,11 +180,14 @@ public class SplashScreen extends AppCompatActivity {
                 @Override
                 public void onResponse(JSONObject response) {
                     LogUtils.LOGV(TAG, "User added on server " + response);
+                    startNext();
                 }
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     LogUtils.LOGD(TAG, "Something went wrong while adding user on server");
+                    // DEBUG
+                    startNext();
                 }
             });
 
@@ -180,6 +202,12 @@ public class SplashScreen extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
+    }
+
+    public void startNext() {
+        Intent intent = new Intent(this, HomeActivity.class);
+        startActivity(intent);
+        finish();
     }
 }
 
